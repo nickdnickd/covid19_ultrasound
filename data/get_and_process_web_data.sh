@@ -108,7 +108,9 @@ wget -O tmp/pocus_videos/convex/Cov_Arnthfield_2020_Vid3.mp4 https://www.medrxiv
 
 echo "Data fetched. Postprocessing..."
 
+source ./bin/activate
 python3 crop_processed_data.py
 
+deactivate
 rm -rf tmp
 echo "Done, shutting down."
