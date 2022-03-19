@@ -14,39 +14,35 @@ ap.add_argument(
     "--data_dir",
     type=str,
     default="../data/image_dataset",
-    help=("Raw data path. Expects 3 or 4 subfolders with classes")
+    help=("Raw data path. Expects 3 or 4 subfolders with classes"),
 )
 ap.add_argument(
     "-o",
     "--output_dir",
     type=str,
     default="../data/cross_validation/",
-    help=("Output path where images for cross validation will be stored.")
+    help=("Output path where images for cross validation will be stored."),
 )
 ap.add_argument(
     "-v",
     "--video_dir",
     type=str,
     default="../data/pocus_videos/convex/",
-    help=("Path where the videos of the database are stored")
+    help=("Path where the videos of the database are stored"),
 )
 ap.add_argument(
-    "-s",
-    "--splits",
-    type=int,
-    default=5,
-    help="Number of folds for cross validation"
+    "-s", "--splits", type=int, default=5, help="Number of folds for cross validation"
 )
 args = vars(ap.parse_args())
 
-NUM_FOLDS = args['splits']
-DATA_DIR = args['data_dir']
-OUTPUT_DIR = args['output_dir']
+NUM_FOLDS = args["splits"]
+DATA_DIR = args["data_dir"]
+OUTPUT_DIR = args["output_dir"]
 
 # MAKE DIRECTORIES
 for split_ind in range(NUM_FOLDS):
     # make directory for this split
-    split_path = os.path.join(OUTPUT_DIR, 'split' + str(split_ind))
+    split_path = os.path.join(OUTPUT_DIR, "split" + str(split_ind))
     if not os.path.exists(split_path):
         os.makedirs(split_path)
 
@@ -57,7 +53,7 @@ for classe in os.listdir(DATA_DIR):
         continue
     # make directories:
     for split_ind in range(NUM_FOLDS):
-        mod_path = os.path.join(OUTPUT_DIR, 'split' + str(split_ind), classe)
+        mod_path = os.path.join(OUTPUT_DIR, "split" + str(split_ind), classe)
         if not os.path.exists(mod_path):
             os.makedirs(mod_path)
 
@@ -80,18 +76,16 @@ for classe in os.listdir(DATA_DIR):
         # s is number of files in one split
         s = len(unique_files) // NUM_FOLDS
         for i in range(NUM_FOLDS):
-            for f in unique_files[i * s:(i + 1) * s]:
+            for f in unique_files[i * s : (i + 1) * s]:
                 inner_dict[f] = i
         # distribute the rest randomly
-        for f in unique_files[NUM_FOLDS * s:]:
+        for f in unique_files[NUM_FOLDS * s :]:
             inner_dict[f] = np.random.choice(np.arange(5))
 
     copy_dict[classe] = inner_dict
     for in_file in os.listdir(os.path.join(DATA_DIR, classe)):
         fold_to_put = inner_dict[in_file.split(".")[0]]
-        split_path = os.path.join(
-            OUTPUT_DIR, 'split' + str(fold_to_put), classe
-        )
+        split_path = os.path.join(OUTPUT_DIR, "split" + str(fold_to_put), classe)
         # print(os.path.join(DATA_DIR, classe, file), split_path)
         shutil.copy(os.path.join(DATA_DIR, classe, in_file), split_path)
 
@@ -153,14 +147,12 @@ for split in range(5):
                     continue
                 parts = file.split(".")
                 if not os.path.exists(
-                    os.path.
-                    join(videos_dir, parts[0] + "." + parts[1].split("_")[0])
+                    os.path.join(videos_dir, parts[0] + "." + parts[1].split("_")[0])
                 ):
-                    butterfly_name = parts[0][:3] + "_Butterfly_" + parts[0][
-                        4:] + ".avi"
-                    if not os.path.exists(
-                        os.path.join(videos_dir, butterfly_name)
-                    ):
+                    butterfly_name = (
+                        parts[0][:3] + "_Butterfly_" + parts[0][4:] + ".avi"
+                    )
+                    if not os.path.exists(os.path.join(videos_dir, butterfly_name)):
                         print("green dots in video or aibronch", file)
                         continue
                     uni.append(butterfly_name)
@@ -187,7 +179,11 @@ for i in range(5):
     for j in range(len(files)):
         assert os.path.exists(
             os.path.join(
-                OUTPUT_DIR, "split" + str(i), this_class[labs[j]],
-                files[j] + "_frame0.jpg"
+                OUTPUT_DIR,
+                "split" + str(i),
+                this_class[labs[j]],
+                files[j] + "_frame0.jpg",
             )
-        ), files[j] + "  in  " + str(i)
+        ), (
+            files[j] + "  in  " + str(i)
+        )
