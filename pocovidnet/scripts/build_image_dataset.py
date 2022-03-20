@@ -5,30 +5,26 @@ import os
 import shutil
 import argparse
 
-TAKE_CLASSES = ["covid", "pneumonia", "regular"]  # can add viral
-TAKE_MODE = ["convex"]  # can add linear
+TAKE_CLASSES = ["Abscess", "Cellulitis", "Normal"]
 
 
 def label_to_dir(lab):
-    if lab == "Cov":
-        label = "covid"
-    elif lab == "Pne" or lab == "pne":
-        label = "pneumonia"
-    elif lab == "Reg":
-        label = "regular"
-    elif lab == "Vir":
-        label = "viral"
+    if lab == "Abs":
+        label = "Abscess"
+    elif lab == "Cel" or lab == "cel":
+        label = "Cellulitis"
+    elif lab == "Nor":
+        label = "Normal"
     else:
         raise ValueError("Wrong label! " + lab)
     return label
 
 
 if __name__ == "__main__":
-    # ARGUMENTS
     parser = argparse.ArgumentParser()
     parser.add_argument('-imgs', type=str, default="../data/pocus_images")
-    parser.add_argument('-out', type=str, default="../data/image_dataset")
-    parser.add_argument('-vids', type=str, default="../data/pocus_videos")
+    parser.add_argument('-out', type=str, default="../data/soft_tissue_study")
+    parser.add_argument('-vids', type=str, default="../data/soft_tissue_study")
     parser.add_argument(
         '-fr',
         help="framerate - at how much Hz to sample",
@@ -51,51 +47,41 @@ if __name__ == "__main__":
     out_image_dir = args.out
 
     if not os.path.exists(out_image_dir):
-        os.makedirs(out_image_dir)
-    for mod in TAKE_CLASSES:
-        if not os.path.exists(os.path.join(out_image_dir, mod)):
-            os.makedirs(os.path.join(out_image_dir, mod))
+        print("Output directory depends on input directory")
+        exit(1)
+    for take_class in TAKE_CLASSES:
+        class_dir = os.path.join(out_image_dir, take_class)
+        class_image_dir = os.path.join(class_dir, f"{take_class}Images")
+        if not os.path.exists(class_image_dir):
+            os.makedirs(class_image_dir)
 
-    # copy all images from pocus_images
-    for mode in TAKE_MODE:
-        for fp in os.listdir(os.path.join(POCUS_IMAGE_DIR, mode)):
-            if fp[-3:] in ["png", "jpg", "peg", "JPG", "PNG"]:
-                label_dir = label_to_dir(fp[:3])
-                if label_dir in TAKE_CLASSES:
-                    shutil.copy(
-                        os.path.join(POCUS_IMAGE_DIR, mode, fp),
-                        os.path.join(out_image_dir, label_dir)
-                    )
 
     # process all videos
-    for mode in TAKE_MODE:
-        vid_files = os.listdir(os.path.join(POCUS_VIDEO_DIR, mode))
-        for i in range(len(vid_files)):
+    # Collect All of the input videos per category
+    vid_files = {}
+    for take_class in TAKE_CLASSES:
+        class_dir = os.path.join(POCUS_VIDEO_DIR, take_class)
+        class_vid_dir = os.path.join(class_dir, f"{take_class}CroppedVideos")
+
+        for vid_file in os.listdir(class_vid_dir):
 
             # skip non video files
-            if vid_files[i][-3:].lower() not in [
+            if vid_file[-3:].lower() not in [
                 "peg", "gif", "mp4", "m4v", "avi", "mov"
             ]:
                 continue
 
             # define video path
-            video_path = os.path.join(POCUS_VIDEO_DIR, mode, vid_files[i])
-            # determine label
-            label = label_to_dir(vid_files[i][:3])
-            if label not in TAKE_CLASSES:
-                continue
+            video_path = os.path.join(class_vid_dir, vid_file)
             # determine out path based on label
-            out_path = os.path.join(out_image_dir, label)
+            out_path = os.path.join(class_dir, f"{take_class}Images" )
 
             # read and write if video
-            cap = cv2.VideoCapture(
-                video_path
-            )  # capturing the video from the given path
-            frameRate = cap.get(5)  #frame rate
-            # num_frames = cap.get(7)
+            cap = cv2.VideoCapture(video_path)
+            frameRate = cap.get(5)  # video frame rate
             every_x_image = int(frameRate / FRAMERATE)
             print(
-                vid_files[i], "framerate", cap.get(5), "width", cap.get(3),
+                vid_file, "framerate", cap.get(5), "width", cap.get(3),
                 "height", cap.get(4), "number frames:", cap.get(7)
             )
             print("--> taking every ", every_x_image, "th image")
@@ -109,7 +95,7 @@ if __name__ == "__main__":
                 if (frameId % every_x_image == 0):
                     # storing the frames in a new folder named test_1
                     filename = os.path.join(
-                        out_path, vid_files[i] + "_frame%d.jpg" % frameId
+                        out_path, vid_file.replace('.mp4', '') + "_frame%d.jpg" % frameId
                     )
                     cv2.imwrite(filename, frame)
                     nr_selected += 1

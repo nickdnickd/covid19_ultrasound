@@ -7,16 +7,7 @@ import matplotlib.pyplot as plt
 DISPLAY_IMG = False
 
 # input path with uncropped videos
-path = "tmp"
-
-# path where to output the final videos
-final_path = "."
-if not os.path.exists(final_path):
-    os.makedirs(final_path)
-    os.makedirs(os.path.join(final_path, "pocus_videos/convex"))
-    os.makedirs(os.path.join(final_path, "pocus_videos/linear"))
-    os.makedirs(os.path.join(final_path, "pocus_images/convex"))
-    os.makedirs(os.path.join(final_path, "pocus_images/linear"))
+path = "soft_tissue_study"
 
 # load json with crop
 with open("crop.json", "r") as infile:
@@ -25,7 +16,11 @@ with open("crop.json", "r") as infile:
 for key in crop_dir.keys():
     # I/O paths
     vid_path = os.path.join(path, key)
-    save_video_path = os.path.join(final_path, key)
+    save_video_path = vid_path.replace("Videos", "CroppedVideos")
+    save_path_dir = os.path.dirname(save_video_path)
+    if not os.path.exists(save_path_dir):
+        print(f'making dir {save_path_dir}')
+        os.makedirs(save_path_dir)
 
     # get crop and trimming
     start, end = crop_dir[key][1]
@@ -65,7 +60,7 @@ for key in crop_dir.keys():
     # write video
     print(np.array(video_array).shape)
     video_path = ".".join(save_video_path.split(".")[:-1])
-    fourcc = cv2.VideoWriter_fourcc(*'MP4V')  # XVID
+    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # XVID
     writer = cv2.VideoWriter(
         video_path + '.mp4', fourcc, cap.get(5), cropped.shape[:2]
     )
