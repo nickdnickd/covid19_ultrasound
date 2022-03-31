@@ -48,7 +48,7 @@ with folders `covid`, `pneumonia`, `regular` and `viral` or a subset of those de
 
 
 ### Cross validation splitting
-The next step is to perform the datat split. You can use the script
+The next step is to perform the data split. You can use the script
 `cross_val_splitter.py` to perform a 5-fold cross validation (it will use the data from `data/image_dataset` by default):
 
 From the directory of this README, execute:
