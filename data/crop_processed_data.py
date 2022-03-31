@@ -17,9 +17,13 @@ for key in crop_dir.keys():
     # I/O paths
     vid_path = os.path.join(path, key)
     save_video_path = vid_path.replace("Videos", "CroppedVideos")
+
+    if os.path.exists(save_video_path):
+        continue
+
     save_path_dir = os.path.dirname(save_video_path)
     if not os.path.exists(save_path_dir):
-        print(f'making dir {save_path_dir}')
+        print(f"making dir {save_path_dir}")
         os.makedirs(save_path_dir)
 
     # get crop and trimming
@@ -43,7 +47,7 @@ for key in crop_dir.keys():
     # Image processing
     if cap.get(7) < 2:
         ret, frame = cap.read()
-        frame = frame[bottom:bottom + size, left:left + size]
+        frame = frame[bottom : bottom + size, left : left + size]
         cv2.imwrite(save_video_path, frame)
         continue
 
@@ -51,7 +55,7 @@ for key in crop_dir.keys():
     cap.set(cv2.CAP_PROP_POS_FRAMES, start)
     for i in range(int(end - start)):
         ret, frame = cap.read()
-        cropped = frame[bottom:bottom + size, left:left + size]
+        cropped = frame[bottom : bottom + size, left : left + size]
         if i == 0 and DISPLAY_IMG:
             plt.imshow(cropped)
             plt.show()
@@ -60,10 +64,8 @@ for key in crop_dir.keys():
     # write video
     print(np.array(video_array).shape)
     video_path = ".".join(save_video_path.split(".")[:-1])
-    fourcc = cv2.VideoWriter_fourcc(*'mp4v')  # XVID
-    writer = cv2.VideoWriter(
-        video_path + '.mp4', fourcc, cap.get(5), cropped.shape[:2]
-    )
+    fourcc = cv2.VideoWriter_fourcc(*"mp4v")  # XVID
+    writer = cv2.VideoWriter(video_path + ".mp4", fourcc, cap.get(5), cropped.shape[:2])
     for x in video_array:
         writer.write(x.astype("uint8"))
     writer.release()
