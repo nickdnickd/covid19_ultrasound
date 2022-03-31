@@ -442,5 +442,225 @@
   "Abscess/AbscessVideos/video348079.mp4": [
     [50, 300, 550],
     [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video338584.mp4": [
+    [78, 170, 560],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video9182.mp4": [
+    [70, 310, 450],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video9183.mp4": [
+    [70, 310, 492],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video281935.mp4": [
+    [60, 200, 580],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video281933.mp4": [
+    [45, 300, 500],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video338583.mp4": [
+    [60, 250, 600],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video338083.mp4": [
+    [90, 240, 560],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video367418.mp4": [
+    [140, 340, 400],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video367802.mp4": [
+    [45, 250, 610],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video367803.mp4": [
+    [48, 270, 600],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video338085.mp4": [
+    [100, 300, 500],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video338091.mp4": [
+    [100, 300, 500],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video282653.mp4": [
+    [50, 280, 550],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video367437.mp4": [
+    [100, 300, 500],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video338090.mp4": [
+    [100, 200, 500],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video367434.mp4": [
+    [140, 220, 405],
+    [0, 160.0]
+  ],
+  "Abscess/AbscessVideos/video367203.mp4": [
+    [80, 380, 550],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video367439.mp4": [
+    [45, 265, 610],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video369428.mp4": [
+    [50, 250, 600],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video369429.mp4": [
+    [80, 250, 600],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video367202.mp4": [
+    [60, 250, 575],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video294955.mp4": [
+    [60, 280, 580],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video294946.mp4": [
+    [75, 300, 575],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video294947.mp4": [
+    [55, 250, 580],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video282658.mp4": [
+    [85, 265, 580],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video367429.mp4": [
+    [40, 230, 600],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video367100.mp4": [
+    [60, 300, 550],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video367099.mp4": [
+    [60, 300, 550],
+    [0, 180.0]
+  ],
+  "Cellulitis/CellulitisVideos/video365867.mp4": [
+    [50, 260, 580],
+    [0, 180.0]
+  ],
+  "Cellulitis/CellulitisVideos/video369536.mp4": [
+    [100, 260, 550],
+    [0, 180.0]
+  ],
+  "Cellulitis/CellulitisVideos/video365866.mp4": [
+    [60, 250, 600],
+    [0, 180.0]
+  ],
+  "Cellulitis/CellulitisVideos/video369534.mp4": [
+    [105, 300, 500],
+    [0, 180.0]
+  ],
+  "Cellulitis/CellulitisVideos/video348598.mp4": [
+    [100, 250, 500],
+    [0, 180.0]
+  ],
+  "Cellulitis/CellulitisVideos/video364698.mp4": [
+    [50, 250, 600],
+    [0, 300.0]
+  ],
+  "Cellulitis/CellulitisVideos/video364695.mp4": [
+    [45, 270, 600],
+    [0, 300.0]
+  ],
+  "Cellulitis/CellulitisVideos/video364696.mp4": [
+    [45, 270, 600],
+    [0, 300.0]
+  ],
+  "Cellulitis/CellulitisVideos/video364697.mp4": [
+    [45, 270, 600],
+    [0, 300.0]
+  ],
+  "Cellulitis/CellulitisVideos/video348594.mp4": [
+    [45, 270, 600],
+    [0, 180.0]
+  ],
+  "Cellulitis/CellulitisVideos/video348595.mp4": [
+    [45, 270, 600],
+    [0, 180.0]
+  ],
+  "Cellulitis/CellulitisVideos/video348597.mp4": [
+    [100, 280, 520],
+    [0, 180.0]
+  ],
+  "Cellulitis/CellulitisVideos/video366432.mp4": [
+    [50, 300, 490],
+    [0, 180.0]
+  ],
+  "Cellulitis/CellulitisVideos/video366431.mp4": [
+    [50, 300, 500],
+    [0, 180.0]
+  ],
+  "Cellulitis/CellulitisVideos/video366430.mp4": [
+    [50, 300, 500],
+    [0, 180.0]
+  ],
+  "Cellulitis/CellulitisVideos/video365868.mp4": [
+    [50, 300, 550],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video368819.mp4": [
+    [50, 240, 600],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video338568.mp4": [
+    [50, 380, 400],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video337400.mp4": [
+    [50, 300, 550],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video337399.mp4": [
+    [50, 300, 550],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video337149.mp4": [
+    [50, 280, 590],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video337150.mp4": [
+    [50, 280, 590],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video337151.mp4": [
+    [50, 240, 580],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video337141.mp4": [
+    [50, 240, 620],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video338565.mp4": [
+    [50, 330, 450],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video338571.mp4": [
+    [50, 380, 400],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video368817.mp4": [
+    [70, 200, 565],
+    [0, 180.0]
   ]
 }
