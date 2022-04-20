@@ -662,5 +662,73 @@
   "Normal/NormalVideos/video368817.mp4": [
     [70, 200, 565],
     [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video365998.mp4": [
+    [70, 240, 550],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video365999.mp4": [
+    [70, 240, 550],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video365993.mp4": [
+    [70, 240, 550],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video336399.mp4": [
+    [80, 240, 550],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video336401.mp4": [
+    [55, 240, 550],
+    [0, 180.0]
+  ],
+  "Abscess/AbscessVideos/video371611.mp4": [
+    [70, 200, 572],
+    [0, 208.0]
+  ],
+  "Abscess/AbscessVideos/video371610.mp4": [
+    [65, 190, 580],
+    [0, 53.0]
+  ],
+  "Normal/NormalVideos/video371769.mp4": [
+    [55, 230, 600],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video371768.mp4": [
+    [65, 280, 580],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video336683.mp4": [
+    [65, 350, 480],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video336682.mp4": [
+    [50, 300, 500],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video336684.mp4": [
+    [50, 300, 500],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video336512.mp4": [
+    [65, 320, 480],
+    [0, 450.0]
+  ],
+  "Normal/NormalVideos/video336513.mp4": [
+    [65, 330, 462],
+    [0, 450.0]
+  ],
+  "Normal/NormalVideos/video371766.mp4": [
+    [60, 245, 595],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video371765.mp4": [
+    [40, 280, 600],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video371770.mp4": [
+    [40, 280, 600],
+    [0, 180.0]
   ]
 }
