@@ -12,8 +12,8 @@ import pandas as pd
 import argparse
 
 CLASS_MAPPING = {
-    3: ['covid', 'pneumonia', 'regular'],
-    4: ['covid', 'pneumonia', 'regular', 'uninformative']
+    3: ['Abscess', 'Cellulitis', 'Normal'],
+    4: ['Abscess', 'Cellulitis', 'Normal', 'Uninformative']
 }
 
 
@@ -135,7 +135,7 @@ def main():
     parser.add_argument('--data', type=str, default="../data/cross_validation")
     parser.add_argument('--weights', type=str, default='trained_models')
     parser.add_argument('--m_id', type=str, default='vgg_base')
-    parser.add_argument('--classes', type=int, default=4)
+    parser.add_argument('--classes', type=int, default=3)
     parser.add_argument('--folds', type=int, default=5)
     parser.add_argument('--save_path', type=str, default="results_vgg")
     args = parser.parse_args()

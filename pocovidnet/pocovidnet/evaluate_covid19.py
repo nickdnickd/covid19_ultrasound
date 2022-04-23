@@ -7,15 +7,18 @@ import cv2
 import numpy as np
 
 from pocovidnet import MODEL_FACTORY
+import tensorflow as tf
 from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 DIR_PATH = os.path.dirname(os.path.realpath(__file__))
 NUM_FOLDS = 5
 CLASS_MAPPING = {
-    3: ['covid', 'pneumonia', 'regular'],
-    4: ['covid', 'pneumonia', 'regular', 'uninformative']
+    3: ['Abscess', 'Cellulitis', 'Normal'],
+    4: ['Abscess', 'Cellulitis', 'Normal', 'Uninformative']
 }
 
+# Suppress logging
+tf.get_logger().setLevel('ERROR')
 
 class Evaluator(object):
 

@@ -41,7 +41,12 @@ ap.add_argument(
     help=("Full path to a whitelist file of approved videos"),
 )
 ap.add_argument(
-    "-s", "--splits", type=int, default=5, help="Number of folds for cross validation"
+    "-s",
+    "--splits",
+    type=int,
+    choices=[1, 2, 5, 10, 20],
+    default=5,
+    help="Number of folds for cross validation. Currently only allowing 1, 2, 5, 10, 20",
 )
 args = vars(ap.parse_args())
 
@@ -83,12 +88,22 @@ def should_skip_file(filename: str, frame_whitelist):
     return False
 
 
+def video_id_to_fold(video_id: str, num_folds: int):
+    """Returns the 0 indexed fold for a given video id"""
+    digit = abs(hash(video_id)) - abs(hash(video_id)) // 10 * 10
+    return digit % num_folds
+
+
 frame_whitelist = build_whitelist()
 
 # MAKE SPLIT
 copy_dict = {}
 for data_class in os.listdir(DATA_DIR):
-    if data_class[0] == "." or data_class.endswith(".xlsx") or data_class.endswith("whitelist.csv"):
+    if (
+        data_class[0] == "."
+        or data_class.endswith(".xlsx")
+        or data_class.endswith("whitelist.csv")
+    ):
         # Hidden file/dir or excel file
         continue
     # make directories:
@@ -120,16 +135,11 @@ for data_class in os.listdir(DATA_DIR):
     # We shouldn't have any standalone images yet for soft tissue
     assert len(unique_images) == 0
 
-    # for k, uni in enumerate([unique_videos]):
     unique_files = list(set(unique_videos))
-    # s is number of files in one split
     files_per_fold = len(unique_files) // NUM_FOLDS
-    for fold in range(NUM_FOLDS):
-        for f in unique_files[fold * files_per_fold : (fold + 1) * files_per_fold]:
-            file_to_fold[f] = fold
-    # distribute the rest randomly
-    for f in unique_files[NUM_FOLDS * files_per_fold :]:
-        file_to_fold[f] = np.random.choice(np.arange(NUM_FOLDS))
+
+    for f in unique_files:
+        file_to_fold[f] = video_id_to_fold(f.split(".")[0], NUM_FOLDS)
 
     copy_dict[data_class] = file_to_fold
     for in_file in os.listdir(class_images_dir):
@@ -138,6 +148,9 @@ for data_class in os.listdir(DATA_DIR):
         # print(os.path.join(DATA_DIR, classe, file), split_path)
 
         if should_skip_file(in_file, frame_whitelist):
+            print(
+                f"skipping {in_file} because it is not present in frame_whitelist AND other frames are present"
+            )
             continue
 
         shutil.copy(os.path.join(class_images_dir, in_file), split_path)
@@ -200,20 +213,7 @@ for split in range(NUM_FOLDS):
             for file in os.listdir(os.path.join(check, folder, classe)):
                 if file[0] == "." or not came_from_video(file):
                     continue
-                # parts = file.split("frame_")
-                # if not os.path.exists(
-                #     os.path.join(videos_dir, parts[0] + "." + parts[1].split("_")[0])
-                # ):
-                #     # Previous paper used butterfly videos but they seem to be checking for them
-                #     # and skipping certain kinds?
-                #     butterfly_name = (
-                #         parts[0][:3] + "_Butterfly_" + parts[0][4:] + ".avi"
-                #     )
-                #     if not os.path.exists(os.path.join(videos_dir, butterfly_name)):
-                #         print("green dots in video or aibronch", file)
-                #         continue
-                #     uni.append(butterfly_name)
-                # else:
+
                 uni.append(file)
                 vid_to_class[file] = classe[:3]
 
@@ -237,7 +237,7 @@ this_class = {"Abs": "Abscess", "Cel": "Cellulitis", "Nor": "Normal"}
 for fold in range(NUM_FOLDS):
     files, labels = video_cross_val[fold]["test"]
     for j, file in enumerate(files):
-        target_file = files[j] # + "_frame0.jpg"
+        target_file = files[j]
         if should_skip_file(target_file, frame_whitelist):
             continue
         assert os.path.exists(

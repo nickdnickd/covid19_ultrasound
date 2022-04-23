@@ -19,6 +19,7 @@ for key in crop_dir.keys():
     save_video_path = vid_path.replace("Videos", "CroppedVideos")
 
     if os.path.exists(save_video_path):
+        print(f"skipping {save_video_path} because it already exists")
         continue
 
     save_path_dir = os.path.dirname(save_video_path)
