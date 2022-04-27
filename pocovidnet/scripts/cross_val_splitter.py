@@ -72,9 +72,12 @@ def build_whitelist(whitelist_path: str = WHITELIST_FULLPATH):
     with open(whitelist_path, newline="\n") as csvfile:
         csv_reader = csv.reader(csvfile)
         for whitelist_row in csv_reader:
-            whitelist_frame_file: str = whitelist_row[0]
-            whitelist_video = whitelist_frame_file.split("_")[0]
-            whitelist[whitelist_video].add(whitelist_frame_file)
+            whitelist_video, *whitelist_frame_files = whitelist_row
+            whitelist_frames = set(whitelist_frame_files)
+            if "" in whitelist_frames:
+                whitelist_frames.remove("")
+
+            whitelist[whitelist_video] |= whitelist_frames
 
     return whitelist
 
