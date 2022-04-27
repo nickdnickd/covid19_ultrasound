@@ -241,3 +241,6 @@ data/pocus_videos/convex/Cov_Arnthfield_2020_Vid3.mp4
 data/pocus_videos/convex/Cov_wfumb_case_dez.mp4
 data/pocus_videos/convex/Reg-nephropocus.mp4
 data/pocus_videos/linear/Reg-NormalLung.mp4
+
+# Exclude backups from git
+data/backup/
