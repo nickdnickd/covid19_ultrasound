@@ -850,5 +850,25 @@
   "Cellulitis/CellulitisVideos/video336215.mp4": [
     [50, 280, 570],
     [0, 180.0]
+  ],
+  "Normal/NormalVideos/video336870.mp4": [
+    [50, 300, 520],
+    [0, 152.0]
+  ],
+  "Normal/NormalVideos/video336872.mp4": [
+    [50, 300, 540],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video336861.mp4": [
+    [50, 300, 520],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video336860.mp4": [
+    [50, 300, 520],
+    [0, 180.0]
+  ],
+  "Normal/NormalVideos/video336869.mp4": [
+    [30, 300, 520],
+    [0, 180.0]
   ]
 }
