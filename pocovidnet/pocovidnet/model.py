@@ -1,10 +1,11 @@
 #POCOVID-Net model.
 import tensorflow as tf
 from tensorflow.keras.applications import (
-    VGG16, MobileNetV2, NASNetMobile, ResNet50
+    VGG16, MobileNetV2, NASNetMobile, ResNet50, EfficientNetB0
 )
 from tensorflow.keras.layers import (
     AveragePooling2D,
+    GlobalAveragePooling2D,
     Dense,
     Dropout,
     Flatten,
@@ -57,6 +58,43 @@ def get_model(
 
     return model
 
+
+def get_efficientnet_model(
+    input_size: tuple = (224, 224, 3),
+    hidden_size: int = 64,
+    dropout: float = 0.5,
+    num_classes: int = 3,
+    trainable_layers: int = 1,
+    log_softmax: bool = True,
+    mc_dropout: bool = False,
+    **kwargs
+):
+    act_fn = tf.nn.softmax if not log_softmax else tf.nn.log_softmax
+
+    # load the VGG16 network, ensuring the head FC layer sets are left off
+    baseModel = EfficientNetB0(
+        weights="imagenet",
+        include_top=False,
+        input_tensor=Input(shape=input_size),
+    )
+
+    # Rebuild top
+    headModel = baseModel.output
+    headModel = GlobalAveragePooling2D(name="avg_pool")(headModel)
+    headModel = BatchNormalization()(headModel)
+
+    headModel = (
+        Dropout(dropout)(headModel, training=True)
+        if mc_dropout else Dropout(dropout)(headModel)
+    )
+    headModel = Dense(num_classes, activation=act_fn)(headModel)
+
+    # place the head FC model on top of the base model
+    model = Model(inputs=baseModel.input, outputs=headModel)
+
+    model = fix_layers(model, num_flex_layers=trainable_layers + 4)
+
+    return model
 
 def get_cam_model(
     input_size: tuple = (224, 224, 3),

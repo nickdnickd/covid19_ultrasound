@@ -8,16 +8,16 @@ import matplotlib.pyplot as plt
 import pickle
 
 OUT_DIR = (
-    "../data/backup/full_run_4_fix_cross_val/results"  # "../results_oct/plots/new"
+    "../data/backup/full_run_6_holdout_test/holdout_results"  # "../results_oct/plots/new"
 )
-IN_DIR = "../data/backup/full_run_4_fix_cross_val/results"
-BEST_MODEL = "results.dat"
+IN_DIR = "../data/backup/full_run_6_holdout_test/holdout_results"
+BEST_MODEL = "voting_results.dat"
 
 compare_model_list = [
-    "results.dat",
+    "voting_results.dat",
 ]
 name_dict = {
-    "results": "VGG16",
+    "voting_results": "VGG16",
     # "cam_3": "VGG-CAM",
     # "nasnet_3": "NASNetMobile",
     # "encoding_3": "Segment-Enc",

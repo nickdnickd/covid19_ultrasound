@@ -1,4 +1,4 @@
-from typing import List, Dict, Set
+from typing import List, Dict, Set, Union, Optional
 from collections import defaultdict
 import os
 import argparse
@@ -6,6 +6,15 @@ import numpy as np
 import shutil
 import json
 import csv
+import random
+
+
+ClassPopulation = Dict[str, List[str]]
+RandomSeed = Union[int, float, str, bytes]
+
+PATIENTS_PER_CLASS = 5  # Number of holdout patients per class
+CSV_PATH = "../data/mrn_vid_diagnosis.csv"
+DEFAULT_SEED = 365
 
 # NOTE: To use the default parameters, execute this from the main directory of
 # the package.
@@ -25,6 +34,13 @@ ap.add_argument(
     type=str,
     default="../data/cross_validation/",
     help=("Output path where images for cross validation will be stored."),
+)
+ap.add_argument(
+    "-t",
+    "--test_dir",
+    type=str,
+    default="../data/holdout_test/",
+    help=("Output path where images for the holdout test set will be stored."),
 )
 ap.add_argument(
     "-v",
@@ -53,6 +69,7 @@ args = vars(ap.parse_args())
 NUM_FOLDS = args["splits"]
 DATA_DIR = args["data_dir"]
 OUTPUT_DIR = args["output_dir"]
+TEST_DIR = args["test_dir"]
 WHITELIST_FULLPATH = args["white_list"]
 
 # MAKE DIRECTORIES
@@ -61,6 +78,10 @@ for split_ind in range(NUM_FOLDS):
     split_path = os.path.join(OUTPUT_DIR, "split" + str(split_ind))
     if not os.path.exists(split_path):
         os.makedirs(split_path)
+
+# Holdout test set
+if not os.path.exists(TEST_DIR):
+    os.makedirs(TEST_DIR)
 
 
 def came_from_video(in_file: str):
@@ -82,6 +103,52 @@ def build_whitelist(whitelist_path: str = WHITELIST_FULLPATH):
     return whitelist
 
 
+def create_holdout_set(
+    class_population: ClassPopulation,
+    random_seed: Optional[RandomSeed] = None,
+    patients_per_class=PATIENTS_PER_CLASS,
+) -> Set[str]:
+
+    if random_seed:
+        random.seed(random_seed)
+
+    holdout_class_population = {
+        class_: set(random.sample(population, k=patients_per_class))
+        for class_, population in class_population.items()
+    }
+
+    return holdout_class_population
+
+
+def read_mrn_csv(csv_path: str) -> ClassPopulation:
+    class_population: ClassPopulation = defaultdict(list)
+    vid_to_mrn = {}
+    with open(csv_path) as csvfile:
+        csv_reader = csv.reader(csvfile)
+        for mrn, vid_name, diagnosis in csv_reader:
+            class_population[diagnosis].append(mrn)
+            vid_id = vid_name.split(".mp4")[0]
+            vid_to_mrn[vid_id] = mrn
+
+    return class_population, vid_to_mrn
+
+
+def select_holdout_mrns(csv_path: str = CSV_PATH):
+
+    population, vid_to_mrn = read_mrn_csv(csv_path)
+
+    holdout_mrns = create_holdout_set(
+        class_population=population, random_seed=DEFAULT_SEED
+    )
+    all_holdout_mrns = set()
+    for _, mrns in holdout_mrns.items():
+        all_holdout_mrns |= mrns
+
+    vid_to_holdout = {vid: mrn in all_holdout_mrns for vid, mrn in vid_to_mrn.items()}
+
+    return vid_to_holdout
+
+
 def should_skip_file(filename: str, frame_whitelist):
     video_name = filename.split("_")[0]
     if video_name in frame_whitelist:
@@ -99,6 +166,9 @@ def video_id_to_fold(video_id: str, num_folds: int):
 
 frame_whitelist = build_whitelist()
 
+# TODO calculate the holdout video ids and determine where to paste them
+vid_to_holdout = select_holdout_mrns()
+
 # MAKE SPLIT
 copy_dict = {}
 for data_class in os.listdir(DATA_DIR):
@@ -115,6 +185,10 @@ for data_class in os.listdir(DATA_DIR):
         if not os.path.exists(mod_path):
             os.makedirs(mod_path)
 
+    holdout_test_class_dir = os.path.join(TEST_DIR, data_class)
+    if not os.path.exists(holdout_test_class_dir):
+        os.makedirs(holdout_test_class_dir)
+
     unique_videos: List[str] = []
     unique_images: List[str] = []
     class_images_dir = os.path.join(
@@ -130,7 +204,9 @@ for data_class in os.listdir(DATA_DIR):
             # this is an image
             # Soft tissue study is currently only sourcing from videos
             # we shouldn't be here
-            raise Exception("file is determined to come from an image")
+            raise Exception(
+                "Soft Tissue Study does not work with inividual images not from a video"
+            )
             # uni_images.append(in_file.split(".")[0])
     # construct dict of file to fold mapping
     file_to_fold = {}
@@ -146,9 +222,16 @@ for data_class in os.listdir(DATA_DIR):
 
     copy_dict[data_class] = file_to_fold
     for in_file in os.listdir(class_images_dir):
-        fold_to_put = file_to_fold[in_file.split("_frame")[0]]
+        vid_id = in_file.split("_frame")[0]
+        fold_to_put = file_to_fold[vid_id]
         split_path = os.path.join(OUTPUT_DIR, "split" + str(fold_to_put), data_class)
-        # print(os.path.join(DATA_DIR, classe, file), split_path)
+
+        # Holdout videos retain ALL frames in the video
+        if vid_to_holdout.get(vid_id, False):
+            copy_from = os.path.join(class_images_dir, in_file)
+            copy_to = os.path.join(holdout_test_class_dir, in_file)
+            shutil.copy(copy_from, copy_to)
+            continue
 
         if should_skip_file(in_file, frame_whitelist):
             print(
@@ -156,6 +239,7 @@ for data_class in os.listdir(DATA_DIR):
             )
             continue
 
+        # Is it a holdout file? Decide weather to copy it to holdout test or to the cross val directory
         shutil.copy(os.path.join(class_images_dir, in_file), split_path)
 
 

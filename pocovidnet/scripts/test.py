@@ -1,19 +1,23 @@
+from collections import defaultdict
 from pocovidnet.evaluate_covid19 import Evaluator
 import os
 import numpy as np
 import cv2
 from imutils import paths
 from sklearn.metrics import (
-    classification_report, confusion_matrix, balanced_accuracy_score,
-    accuracy_score, matthews_corrcoef
+    classification_report,
+    confusion_matrix,
+    balanced_accuracy_score,
+    accuracy_score,
+    matthews_corrcoef,
 )
 import pickle
 import pandas as pd
 import argparse
 
 CLASS_MAPPING = {
-    3: ['Abscess', 'Cellulitis', 'Normal'],
-    4: ['Abscess', 'Cellulitis', 'Normal', 'Uninformative']
+    3: ["Abscess", "Cellulitis", "Normal"],
+    4: ["Abscess", "Cellulitis", "Normal", "Uninformative"],
 }
 
 
@@ -52,14 +56,14 @@ def load_encoding(imagePath, FEAT_ID=0, w=7, h=9, pool=True):
     if FEAT_ID > 0 and FEAT_ID < 4:
         feats = [FEAT_ID]
     elif type(FEAT_ID) != int:
-        raise TypeError('Give int as feature type')
+        raise TypeError("Give int as feature type")
     else:
         feats = [1, 2, 3]
 
     sample = []
     for feat in feats:
         # Use individual features
-        image = cv2.resize(data['f' + str(feat)][0, :, :, :], (w, h))
+        image = cv2.resize(data["f" + str(feat)][0, :, :, :], (w, h))
         sp = np.mean(image, axis=(0, 1)) if pool else image.flatten()
         sample.append(sp)
     sample = np.concatenate(sample).flatten()
@@ -86,17 +90,22 @@ def evaluate_logits(saved_logits, saved_gt, saved_files, CLASSES, save_path):
         df["balanced"] = [bal for _ in range(len(df))]
         accs.append(report["accuracy"])
         bal_accs.append(balanced_accuracy_score(gt_s, pred_idx_s))
-        all_reports.append(np.array(df)[:len(CLASSES)])
+        all_reports.append(np.array(df)[: len(CLASSES)])
 
     print("Average scores in cross validation:")
     df_arr = np.around(np.mean(all_reports, axis=0), 3)
     df_classes = pd.DataFrame(
         df_arr,
         columns=[
-            "Precision", "Recall", "F1-score", "MCC", "Specificity",
-            "Accuracy", "Balanced"
+            "Precision",
+            "Recall",
+            "F1-score",
+            "MCC",
+            "Specificity",
+            "Accuracy",
+            "Balanced",
         ],
-        index=CLASSES
+        index=CLASSES,
     )
     print(df_classes)
     df_classes.to_csv(save_path + "_mean.csv")
@@ -106,10 +115,15 @@ def evaluate_logits(saved_logits, saved_gt, saved_files, CLASSES, save_path):
     df_std = pd.DataFrame(
         df_std,
         columns=[
-            "Precision", "Recall", "F1-score", "MCC", "Specificity",
-            "Accuracy", "Balanced"
+            "Precision",
+            "Recall",
+            "F1-score",
+            "MCC",
+            "Specificity",
+            "Accuracy",
+            "Balanced",
         ],
-        index=CLASSES
+        index=CLASSES,
     )
     df_std.to_csv(save_path + "_std.csv")
     print(df_std)
@@ -131,30 +145,39 @@ def evaluate_3(saved_logits, saved_gt, saved_files, CLASSES, save_path):
 
 
 def main():
-    parser = argparse.ArgumentParser(description='Evaluate cross validation')
-    parser.add_argument('--data', type=str, default="../data/cross_validation")
-    parser.add_argument('--weights', type=str, default='trained_models')
-    parser.add_argument('--m_id', type=str, default='vgg_base')
-    parser.add_argument('--classes', type=int, default=3)
-    parser.add_argument('--folds', type=int, default=5)
-    parser.add_argument('--save_path', type=str, default="results_vgg")
+    parser = argparse.ArgumentParser(description="Evaluate cross validation")
+    parser.add_argument(
+        "--holdout", action="store_true", help="Run the test on the holdout test set"
+    )
+    parser.add_argument("--data", type=str, default="../data/cross_validation")
+    parser.add_argument("--data_holdout", type=str, default="../data/holdout_test")
+    parser.add_argument("--weights", type=str, default="trained_models")
+    parser.add_argument("--m_id", type=str, default="vgg_base")
+    parser.add_argument("--classes", type=int, default=3)
+    parser.add_argument("--folds", type=int, default=5)
+    parser.add_argument("--save_path", type=str, default="results_vgg")
     args = parser.parse_args()
 
+    # gt == Ground Truth
     saved_logits, saved_gt, saved_files = [], [], []
 
     CLASSES = CLASS_MAPPING[args.classes]
     MOD_FILE_MAP = {
-        'dense': ['npz'],
-        'vgg_base': ['gif', 'jpg', 'png', 'peg'],
-        'vgg_cam': ['jpg', 'png', 'peg'],
-        'nasnet': ['jpg', 'png', 'peg'],
-        'mobilenet_v2': ['jpg', 'png', 'peg']
+        "dense": ["npz"],
+        "vgg_base": ["gif", "jpg", "png", "peg"],
+        "vgg_cam": ["jpg", "png", "peg"],
+        "nasnet": ["jpg", "png", "peg"],
+        "mobilenet_v2": ["jpg", "png", "peg"],
     }
 
     for i in range(args.folds):
         print("------------- SPLIT ", i, "-------------------")
         # define data input path
-        path = os.path.join(args.data, "split" + str(i))
+        # In the case of the holdout
+        if args.holdout:
+            path = args.data_holdout
+        else:
+            path = os.path.join(args.data, "split" + str(i))
 
         test_labels, test_files = [], []
         test_data = []
@@ -165,13 +188,13 @@ def main():
             if imagePath[-3:] not in MOD_FILE_MAP[args.m_id]:
                 continue
 
-            # extract the class label from the filename
+            # extract the class label from the directory
             label = imagePath.split(os.path.sep)[-2]
 
             # load the image
-            if args.m_id == 'dense':
+            if args.m_id == "dense":
                 image = load_encoding(imagePath)
-            elif imagePath[-3:] == 'gif':
+            elif imagePath[-3:] == "gif":
                 cap = cv2.VideoCapture(imagePath)
                 ret, image = cap.read()
             else:
@@ -182,7 +205,7 @@ def main():
             test_data.append(image)
             test_files.append(imagePath.split(os.path.sep)[-1])
 
-        if args.m_id == 'dense':
+        if args.m_id == "dense":
             test_data = np.expand_dims(np.stack(test_data), 1)
             preprocess = False
         else:
@@ -197,14 +220,12 @@ def main():
             ensemble=False,
             split=i,
             num_classes=len(CLASSES),
-            model_id=args.m_id
+            model_id=args.m_id,
         )
         print("testing on n_files:", len(test_data))
 
         # MAIN STEP: feed through model and compute logits
-        logits = np.array(
-            [model(img, preprocess=preprocess) for img in test_data]
-        )
+        logits = np.array([model(img, preprocess=preprocess) for img in test_data])
 
         # remember for evaluation:
         saved_logits.append(logits)
@@ -214,25 +235,21 @@ def main():
         # output the information
         predIdxs = np.argmax(logits, axis=1)
 
-        print(
-            classification_report(
-                gt_class_idx, predIdxs, target_names=CLASSES
-            )
-        )
+        print(classification_report(gt_class_idx, predIdxs, target_names=CLASSES))
 
     with open(args.save_path + ".dat", "wb") as outfile:
         pickle.dump((saved_logits, saved_gt, saved_files), outfile)
 
-    # EVALUATE
-    evaluate_logits(
-        saved_logits, saved_gt, saved_files, CLASSES, args.save_path
-    )
+    # if args.holdout:
+    #     evaluate_video_voting(saved_logits, saved_gt, saved_files, CLASSES, args.save_path)
+    # else:
+    # EVALUATE with cross-validation metrics
+    evaluate_logits(saved_logits, saved_gt, saved_files, CLASSES, args.save_path)
 
     # EVALUATE ONLY 3 CLASSES
     if len(CLASSES) == 4:
         evaluate_3(
-            saved_logits, saved_gt, saved_files, CLASS_MAPPING[3],
-            args.save_path
+            saved_logits, saved_gt, saved_files, CLASS_MAPPING[3], args.save_path
         )
 
 

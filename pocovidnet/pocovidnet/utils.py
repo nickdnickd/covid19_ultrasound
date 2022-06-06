@@ -1,11 +1,11 @@
 import numpy as np
 from sklearn.metrics import balanced_accuracy_score
+from tensorflow.keras import layers
 from tensorflow.keras.callbacks import Callback
 
 
 # A class to show balanced accuracy.
 class Metrics(Callback):
-
     def __init__(self, valid_data, model):
         super(Metrics, self).__init__()
         self.valid_data = valid_data
@@ -23,10 +23,10 @@ class Metrics(Callback):
         y_predict = np.argmax(y_predict, axis=1)
         self._data.append(
             {
-                'val_balanced': balanced_accuracy_score(y_val, y_predict),
+                "val_balanced": balanced_accuracy_score(y_val, y_predict),
             }
         )
-        print(f'Balanced accuracy is: {self._data[-1]}')
+        print(f"Balanced accuracy is: {self._data[-1]}")
         return
 
     def get_data(self):
@@ -48,7 +48,9 @@ def fix_layers(model, num_flex_layers: int = 1):
     """
     num_layers = len(model.layers)
     for ind, layer in enumerate(model.layers):
-        if ind < num_layers - num_flex_layers:
+        if (ind < num_layers - num_flex_layers) and not isinstance(
+            layer, layers.BatchNormalization
+        ):
             layer.trainable = False
 
     return model
