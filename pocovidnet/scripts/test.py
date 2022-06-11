@@ -166,6 +166,7 @@ def main():
         "dense": ["npz"],
         "vgg_base": ["gif", "jpg", "png", "peg"],
         "vgg_cam": ["jpg", "png", "peg"],
+        "efficientnet": ["jpg", "png", "peg"],
         "nasnet": ["jpg", "png", "peg"],
         "mobilenet_v2": ["jpg", "png", "peg"],
     }
